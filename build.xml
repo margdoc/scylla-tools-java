@@ -468,7 +468,14 @@
           <dependency groupId="com.clearspring.analytics" artifactId="stream" version="2.5.2">
             <exclusion groupId="it.unimi.dsi" artifactId="fastutil" />
           </dependency>
-          <dependency groupId="com.scylladb" artifactId="scylla-driver-core" version="3.7.1-scylla-2" classifier="shaded" />
+          <dependency groupId="com.scylladb" artifactId="scylla-driver-core" version="3.10.2.0-SNAPSHOT" classifier="shaded" />
+          <dependency groupId="com.scylladb" artifactId="scylla-driver-opentelemetry" version="3.10.2.0-SNAPSHOT" />
+
+          <dependency groupId="io.opentelemetry" artifactId="opentelemetry-sdk" version="1.9.1" />
+          <dependency groupId="io.opentelemetry" artifactId="opentelemetry-exporter-zipkin" version="1.9.1" />
+          <dependency groupId="io.opentelemetry" artifactId="opentelemetry-semconv" version="1.9.0-alpha" />
+
+<!--          <dependency groupId="com.scylladb" artifactId="scylla-driver-core" version="3.7.1-scylla-2" classifier="shaded" />-->
 	  <!-- UPDATE AND UNCOMMENT ON THE DRIVER RELEASE, BEFORE 4.0 RELEASE
           <dependency groupId="com.datastax.cassandra" artifactId="cassandra-driver-core" version="3.0.1" classifier="shaded">
             <exclusion groupId="io.netty" artifactId="netty-buffer"/>
@@ -588,6 +595,10 @@
           <exclusion groupId="io.netty" artifactId="netty-handler"/>
           <exclusion groupId="io.netty" artifactId="netty-transport"/>
         </dependency>
+          <dependency groupId="io.opentelemetry" artifactId="opentelemetry-sdk" version="1.9.1" />
+          <dependency groupId="io.opentelemetry" artifactId="opentelemetry-exporter-zipkin" version="1.9.1" />
+          <dependency groupId="io.opentelemetry" artifactId="opentelemetry-semconv" version="1.9.0-alpha" />
+        <dependency groupId="com.scylladb" artifactId="scylla-driver-opentelemetry" />
         <dependency groupId="org.eclipse.jdt.core.compiler" artifactId="ecj"/>
         <dependency groupId="org.caffinitas.ohc" artifactId="ohc-core" version="0.4.4" />
         <dependency groupId="org.caffinitas.ohc" artifactId="ohc-core-j8" version="0.4.4" />
@@ -672,6 +683,10 @@
           <exclusion groupId="io.netty" artifactId="netty-handler"/>
           <exclusion groupId="io.netty" artifactId="netty-transport"/>
         </dependency>
+        <dependency groupId="com.scylladb" artifactId="scylla-driver-opentelemetry" />
+          <dependency groupId="io.opentelemetry" artifactId="opentelemetry-sdk" version="1.9.1" />
+          <dependency groupId="io.opentelemetry" artifactId="opentelemetry-exporter-zipkin" version="1.9.1" />
+          <dependency groupId="io.opentelemetry" artifactId="opentelemetry-semconv" version="1.9.0-alpha" />
 
         <!-- don't need jna to run, but nice to have -->
         <dependency groupId="net.java.dev.jna" artifactId="jna"/>
