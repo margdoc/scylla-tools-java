@@ -109,15 +109,7 @@ public final class Stress
                 )
             );
 
-        Tracer tracer = openTelemetry.getTracer("this");
-
-        int exitCode;
-        Span span = tracer.spanBuilder("benchmark").startSpan();
-        try (Scope scope = span.makeCurrent()) {
-            exitCode = run(arguments);
-        } finally {
-            span.end();
-        }
+        int exitCode = run(arguments);
 
         if (FBUtilities.isWindows)
             WindowsTimer.endTimerPeriod(1);
