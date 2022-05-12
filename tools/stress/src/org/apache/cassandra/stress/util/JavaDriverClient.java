@@ -35,6 +35,7 @@ import org.apache.cassandra.stress.settings.StressSettings;
 
 import com.datastax.driver.opentelemetry.*;
 import io.opentelemetry.api.OpenTelemetry;
+import io.opentelemetry.api.GlobalOpenTelemetry;
 import io.opentelemetry.api.trace.Tracer;
 import io.opentelemetry.api.common.Attributes;
 import io.opentelemetry.exporter.zipkin.ZipkinSpanExporter;
@@ -97,7 +98,11 @@ public class JavaDriverClient
         int requestsPerConnection = (maxThreadCount / connectionsPerHost) + connectionsPerHost;
 
         maxPendingPerConnection = settings.mode.maxPendingPerConnection;
+
+        tracer = GlobalOpenTelemetry.getTracer("this");
     }
+
+    Tracer tracer;
 
     private LoadBalancingPolicy loadBalancingPolicy(StressSettings settings)
     {
@@ -133,34 +138,6 @@ public class JavaDriverClient
 
     public void connect(ProtocolOptions.Compression compression) throws Exception
     {
-        // Workaround for setting ContextStorage to ThreadLocalContextStorage.
-        System.setProperty("io.opentelemetry.context.contextStorageProvider", "default");
-
-        Resource serviceNameResource =
-            Resource.create(Attributes.of(ResourceAttributes.SERVICE_NAME, "cassandra-stress"));
-
-        final SdkTracerProvider tracerProvider =
-            SdkTracerProvider.builder()
-                .addSpanProcessor(SimpleSpanProcessor.create(ZipkinSpanExporter.builder().setEndpoint("http://127.0.0.1:9411/api/v2/spans").build()))
-                .setResource(Resource.getDefault().merge(serviceNameResource))
-                .build();
-        OpenTelemetry openTelemetry =
-            OpenTelemetrySdk.builder().setTracerProvider(tracerProvider).buildAndRegisterGlobal();
-
-        // Add a shutdown hook to shut down the SDK.
-        Runtime.getRuntime()
-            .addShutdownHook(
-                new Thread(
-                    new Runnable()
-                    {
-                        @Override
-                        public void run()
-                        {
-                            tracerProvider.close();
-                        }
-                    }
-                )
-            );
 
         PoolingOptions poolingOpts = new PoolingOptions()
                                      .setConnectionsPerHost(HostDistance.LOCAL, connectionsPerHost, connectionsPerHost)
@@ -211,7 +188,6 @@ public class JavaDriverClient
                     host.getDatacenter(), host.getAddress(), host.getRack());
         }
 
-        Tracer tracer = openTelemetry.getTracerProvider().get("this");
         OpenTelemetryTracingInfoFactory tracingInfoFactory = new OpenTelemetryTracingInfoFactory(tracer);
         cluster.setTracingInfoFactory(tracingInfoFactory);
 

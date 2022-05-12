@@ -474,6 +474,7 @@
           <dependency groupId="io.opentelemetry" artifactId="opentelemetry-sdk" version="1.9.1" />
           <dependency groupId="io.opentelemetry" artifactId="opentelemetry-exporter-zipkin" version="1.9.1" />
           <dependency groupId="io.opentelemetry" artifactId="opentelemetry-semconv" version="1.9.0-alpha" />
+          <dependency groupId="io.zipkin.reporter2" artifactId="zipkin-sender-okhttp3" version="2.16.3" />
 
 <!--          <dependency groupId="com.scylladb" artifactId="scylla-driver-core" version="3.7.1-scylla-2" classifier="shaded" />-->
 	  <!-- UPDATE AND UNCOMMENT ON THE DRIVER RELEASE, BEFORE 4.0 RELEASE
@@ -598,6 +599,8 @@
           <dependency groupId="io.opentelemetry" artifactId="opentelemetry-sdk" version="1.9.1" />
           <dependency groupId="io.opentelemetry" artifactId="opentelemetry-exporter-zipkin" version="1.9.1" />
           <dependency groupId="io.opentelemetry" artifactId="opentelemetry-semconv" version="1.9.0-alpha" />
+          <dependency groupId="io.zipkin.reporter2" artifactId="zipkin-sender-okhttp3" version="2.16.3" />
+          
         <dependency groupId="com.scylladb" artifactId="scylla-driver-opentelemetry" />
         <dependency groupId="org.eclipse.jdt.core.compiler" artifactId="ecj"/>
         <dependency groupId="org.caffinitas.ohc" artifactId="ohc-core" version="0.4.4" />
@@ -687,6 +690,7 @@
           <dependency groupId="io.opentelemetry" artifactId="opentelemetry-sdk" version="1.9.1" />
           <dependency groupId="io.opentelemetry" artifactId="opentelemetry-exporter-zipkin" version="1.9.1" />
           <dependency groupId="io.opentelemetry" artifactId="opentelemetry-semconv" version="1.9.0-alpha" />
+          <dependency groupId="io.zipkin.reporter2" artifactId="zipkin-sender-okhttp3" version="2.16.3" />
 
         <!-- don't need jna to run, but nice to have -->
         <dependency groupId="net.java.dev.jna" artifactId="jna"/>

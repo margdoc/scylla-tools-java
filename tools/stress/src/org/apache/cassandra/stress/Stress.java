@@ -27,6 +27,22 @@ import org.apache.cassandra.stress.util.MultiResultLogger;
 import org.apache.cassandra.utils.FBUtilities;
 import org.apache.cassandra.utils.WindowsTimer;
 
+import com.datastax.driver.opentelemetry.*;
+import io.opentelemetry.api.OpenTelemetry;
+import io.opentelemetry.api.trace.Span;
+import io.opentelemetry.context.Scope;
+import io.opentelemetry.api.GlobalOpenTelemetry;
+import io.opentelemetry.api.trace.Tracer;
+import io.opentelemetry.api.common.Attributes;
+import io.opentelemetry.exporter.zipkin.ZipkinSpanExporter;
+import io.opentelemetry.sdk.OpenTelemetrySdk;
+import io.opentelemetry.sdk.resources.Resource;
+import io.opentelemetry.sdk.trace.SdkTracerProvider;
+import io.opentelemetry.sdk.trace.export.SimpleSpanProcessor;
+import io.opentelemetry.sdk.trace.export.SpanExporter;
+import io.opentelemetry.semconv.resource.attributes.ResourceAttributes;
+import zipkin2.reporter.okhttp3.OkHttpSender;
+
 public final class Stress
 {
 
@@ -59,7 +75,49 @@ public final class Stress
         if (FBUtilities.isWindows)
             WindowsTimer.startTimerPeriod(1);
 
-        int exitCode = run(arguments);
+        Resource serviceNameResource =
+            Resource.create(Attributes.of(ResourceAttributes.SERVICE_NAME, "cassandra-stress"));
+
+        final OkHttpSender sender = OkHttpSender.newBuilder()
+            .maxRequests(32768)
+            .endpoint("http://127.0.0.1:9411/api/v2/spans")
+            .build();
+
+        final SdkTracerProvider tracerProvider =
+            SdkTracerProvider.builder()
+                .addSpanProcessor(SimpleSpanProcessor.create(
+                    ZipkinSpanExporter.builder()
+                        .setSender(sender)
+                        .build()
+                    )
+                )
+                .setResource(Resource.getDefault().merge(serviceNameResource))
+                .build();
+        OpenTelemetry openTelemetry =
+            OpenTelemetrySdk.builder().setTracerProvider(tracerProvider).buildAndRegisterGlobal();
+
+        // Add a shutdown hook to shut down the SDK.
+        Runtime.getRuntime()
+            .addShutdownHook(
+                new Thread(
+                    new Runnable() {
+                        @Override
+                        public void run() {
+                            tracerProvider.close();
+                        }
+                    }
+                )
+            );
+
+        Tracer tracer = openTelemetry.getTracer("this");
+
+        int exitCode;
+        Span span = tracer.spanBuilder("benchmark").startSpan();
+        try (Scope scope = span.makeCurrent()) {
+            exitCode = run(arguments);
+        } finally {
+            span.end();
+        }
 
         if (FBUtilities.isWindows)
             WindowsTimer.endTimerPeriod(1);
