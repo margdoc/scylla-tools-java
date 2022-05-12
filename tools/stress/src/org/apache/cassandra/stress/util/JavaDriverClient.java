@@ -99,10 +99,10 @@ public class JavaDriverClient
 
         maxPendingPerConnection = settings.mode.maxPendingPerConnection;
 
-        tracer = GlobalOpenTelemetry.getTracer("this");
+//        tracer = GlobalOpenTelemetry.getTracer("this");
     }
 
-    Tracer tracer;
+//    Tracer tracer;
 
     private LoadBalancingPolicy loadBalancingPolicy(StressSettings settings)
     {
@@ -188,8 +188,8 @@ public class JavaDriverClient
                     host.getDatacenter(), host.getAddress(), host.getRack());
         }
 
-        OpenTelemetryTracingInfoFactory tracingInfoFactory = new OpenTelemetryTracingInfoFactory(tracer);
-        cluster.setTracingInfoFactory(tracingInfoFactory);
+//        OpenTelemetryTracingInfoFactory tracingInfoFactory = new OpenTelemetryTracingInfoFactory(tracer);
+//        cluster.setTracingInfoFactory(tracingInfoFactory);
 
         session = cluster.connect();
     }

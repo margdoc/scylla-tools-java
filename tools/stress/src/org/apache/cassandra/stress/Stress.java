@@ -75,39 +75,39 @@ public final class Stress
         if (FBUtilities.isWindows)
             WindowsTimer.startTimerPeriod(1);
 
-        Resource serviceNameResource =
-            Resource.create(Attributes.of(ResourceAttributes.SERVICE_NAME, "cassandra-stress"));
-
-        final OkHttpSender sender = OkHttpSender.newBuilder()
-            .maxRequests(32768)
-            .endpoint("http://127.0.0.1:9411/api/v2/spans")
-            .build();
-
-        final SdkTracerProvider tracerProvider =
-            SdkTracerProvider.builder()
-                .addSpanProcessor(SimpleSpanProcessor.create(
-                    ZipkinSpanExporter.builder()
-                        .setSender(sender)
-                        .build()
-                    )
-                )
-                .setResource(Resource.getDefault().merge(serviceNameResource))
-                .build();
-        OpenTelemetry openTelemetry =
-            OpenTelemetrySdk.builder().setTracerProvider(tracerProvider).buildAndRegisterGlobal();
-
-        // Add a shutdown hook to shut down the SDK.
-        Runtime.getRuntime()
-            .addShutdownHook(
-                new Thread(
-                    new Runnable() {
-                        @Override
-                        public void run() {
-                            tracerProvider.close();
-                        }
-                    }
-                )
-            );
+//        Resource serviceNameResource =
+//            Resource.create(Attributes.of(ResourceAttributes.SERVICE_NAME, "cassandra-stress"));
+//
+//        final OkHttpSender sender = OkHttpSender.newBuilder()
+//            .maxRequests(32768)
+//            .endpoint("http://127.0.0.1:9411/api/v2/spans")
+//            .build();
+//
+//        final SdkTracerProvider tracerProvider =
+//            SdkTracerProvider.builder()
+//                .addSpanProcessor(SimpleSpanProcessor.create(
+//                    ZipkinSpanExporter.builder()
+//                        .setSender(sender)
+//                        .build()
+//                    )
+//                )
+//                .setResource(Resource.getDefault().merge(serviceNameResource))
+//                .build();
+//        OpenTelemetry openTelemetry =
+//            OpenTelemetrySdk.builder().setTracerProvider(tracerProvider).buildAndRegisterGlobal();
+//
+//        // Add a shutdown hook to shut down the SDK.
+//        Runtime.getRuntime()
+//            .addShutdownHook(
+//                new Thread(
+//                    new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            tracerProvider.close();
+//                        }
+//                    }
+//                )
+//            );
 
         int exitCode = run(arguments);
 
