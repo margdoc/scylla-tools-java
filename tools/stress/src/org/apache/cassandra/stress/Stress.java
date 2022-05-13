@@ -85,12 +85,12 @@ public final class Stress
 
         final SdkTracerProvider tracerProvider =
             SdkTracerProvider.builder()
-                .addSpanProcessor(SimpleSpanProcessor.create(
-                    ZipkinSpanExporter.builder()
-                        .setSender(sender)
-                        .build()
-                    )
-                )
+//                .addSpanProcessor(SimpleSpanProcessor.create(
+//                    ZipkinSpanExporter.builder()
+//                        .setSender(sender)
+//                        .build()
+//                    )
+//                )
                 .setResource(Resource.getDefault().merge(serviceNameResource))
                 .build();
         OpenTelemetry openTelemetry =
